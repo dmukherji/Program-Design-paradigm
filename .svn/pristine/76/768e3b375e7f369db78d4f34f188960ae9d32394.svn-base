@@ -1,0 +1,40 @@
+Date	Who	Start	Stop	Interruptions	TimeOnTask	Comments
+10/12	MZJ	14:10	18:35	10+5		250		START q1,data definition plus functions
+============committing to svn: 10/12 18:35 ===================
+10/12	MZJ	19:05	22:10	5		180		continus q1
+	MZJ	22:30	23:15			45		continus q1
+============committing to svn: 10/12 23:16 ===================
+10/13	MZJ	09:20	11:10	10+10		90		finish q1
+============committing to svn: 10/13 11:20 ===================
+10/13	MZJ	16:20	18:10	10		100		start q2, finish most part except expr-to-image
+============committing to svn: 10/13 18:20 ===================
+10/15	MZJ	12:30	13:10			40		finish q2 without tests
+	MZJ	14:00	16:00	20+10		90		finish q1 except tests	
+============committing to svn: 10/15 16:00 ===================
+10/15	MZJ	22:00	23:30	10		80		modify some functions of q1
+============committing to svn: 10/15 23:40===================
+10/15	MZJ	23:40	02:30	10+20+10	130		start writting tests for q1
+============committing to svn: 10/16 02:30===================
+10/16	MZJ	09:10	10:30	5		75		keep doing tests for q1
+============committing to svn: 10/16 10:40===================
+10/16	MZJ	11:20	12:30	5+10+5		50		finish q1 totally
+============committing to svn: 10/16 12:30===================
+10/16	MZJ	14:00	15:05	5		60		do q2 tests
+============committing to svn: 10/16 15:04===================
+10/16	MZJ	22:30	01:10	10+10		140		almost finish q2
+10/17	MZJ	10:00	11:00	10		50		totally finish q2
+============committing to svn: 10/17 13:15===================
+10/17	MZJ	13:20	14:10	10		40		modify a littel, add more tests
+============committing to svn: 10/17 14:25===================
+10/17	MZJ	17:00	17:30			30		*q1 ok*
+============committing to svn: 10/17 17:35===================
+10/17	MZJ	17:45	17:55			10		*all done*
+============committing to svn: 10/17 17:55===================
+
+Total Time On Task Q1 (minutes)			790
+Total Time On Task Q2 (minutes)			400
+		
+TOTQ1						13.1
+TOTQ2						6.6
+
+TOTAL						19.7

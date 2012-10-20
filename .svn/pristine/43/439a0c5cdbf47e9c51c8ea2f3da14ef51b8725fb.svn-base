@@ -1,0 +1,172 @@
+;; strategy : structural decomposition on world [World]
+;; strategy : function composition
+;; strategy : structural decomposition on lon [ListOf<Node>]
+;; strategy : structural decomposition on node [Node]
+;; strategy : structural decomposition on posn [Posn]
+(world-to-trees world)
+;; strategy : higher order function composition
+
+
+;; strategy : higher order function composition
+(define (draw-lon lon image)
+   (foldr draw-node image lon))
+
+
+;; strategy : higher order function composition
+(define (world-after-mouse-down-helper lon x y)
+  (local (;; world-after-mouse-down-map: Node -> Node
+          ;; updated node which is selected after mouse is down
+          (define (world-after-mouse-down-map node)
+              (update-node-to-selected node x y)))
+   (map world-after-mouse-down-map lon)))
+
+
+;; strategy : higher order function composition
+(define (world-after-mouse-up-helper lon)
+   (map node-after-mouse-up lon))
+
+
+(make-node empty false (make-posn 10 30)) 10 30)
+INITIAL-ROOT-NODE
+ListOf<Node>
+
+(define (node-fn node)
+    (...
+     (node-lon node)
+     (node-root? node)
+     (node-selected? node)
+     (node-center node)
+     (node-minX node)))
+
+(define (lon-fn lon)
+   (cond 
+       [(empty? lon) ...]
+       [else (...
+                (node-fn (first lon))
+                (lon-fn (rest lon)))]))
+
+(define INITIAL-TEST
+  (make-world
+    (list
+      (make-node ;; root node of all node (level-0)
+        (list
+            ;; not root node (level-1)
+            (make-node empty false false (make-posn 90 160) 0) 
+            ;; root node     (level-1)
+            (make-node
+                (list
+                    ;; not root node (level-2)
+                    (make-node empty false false (make-posn 120 220) 0)
+                    ;; not root node (level-2)
+                    (make-node empty false false (make-posn 180 220) 0))
+                  true
+                  false
+                  (make-posn 150 180)
+                  107)
+             ;; not root node (level-1)
+             (make-node empty false false (make-posn 30 160) 0))
+        true
+        false
+        (make-posn 150 120)
+        89))))
+
+(define MOUSE-DOWN-ON-LEVEL-0-ROOT
+  (make-world
+    (list
+      (make-node ;; root node of all node (level-0)
+        (list
+            ;; not root node (level-1)
+            (make-node empty false false (make-posn 90 160) 0) 
+            ;; root node     (level-1)
+            (make-node
+                (list
+                    ;; not root node (level-2)
+                    (make-node empty false false (make-posn 120 220) 0)
+                    ;; not root node (level-2)
+                    (make-node empty false false (make-posn 180 220) 0))
+                  true
+                  false
+                  (make-posn 150 180)
+                  107)
+             ;; not root node (level-1)
+             (make-node empty false false (make-posn 30 160) 0))
+        true
+        true;;changed
+        (make-posn 150 120)
+        89))))
+
+(define MOUSE-DOWN-ON-LEVEL-1-NOT-ROOT
+  (make-world
+    (list
+      (make-node ;; root node of all node (level-0)
+        (list
+            ;; not root node (level-1) ;; selected? changed
+            (make-node empty false true (make-posn 90 160) 0) 
+            ;; root node     (level-1)
+            (make-node
+                (list
+                    ;; not root node (level-2)
+                    (make-node empty false false (make-posn 120 220) 0)
+                    ;; not root node (level-2)
+                    (make-node empty false false (make-posn 180 220) 0))
+                  true
+                  false
+                  (make-posn 150 180)
+                  107)
+             ;; not root node (level-1)
+             (make-node empty false false (make-posn 30 160) 0))
+        true
+        false
+        (make-posn 150 120)
+        89))))
+
+(define MOUSE-DOWN-ON-LEVEL-1-ROOT
+  (make-world
+    (list
+      (make-node ;; root node of all node (level-0)
+        (list
+            ;; not root node (level-1) 
+            (make-node empty false false (make-posn 90 160) 0) 
+            ;; root node     (level-1)
+            (make-node
+                (list
+                    ;; not root node (level-2)
+                    (make-node empty false false (make-posn 120 220) 0)
+                    ;; not root node (level-2)
+                    (make-node empty false false (make-posn 180 220) 0))
+                  true
+                  true ;; selected? changed
+                  (make-posn 150 180)
+                  107)
+             ;; not root node (level-1)
+             (make-node empty false false (make-posn 30 160) 0))
+        true
+        false
+        (make-posn 150 120)
+        89))))
+
+(define MOUSE-DOWN-ON-LEVEL-2-NOT-ROOT
+  (make-world
+    (list
+      (make-node ;; root node of all node (level-0)
+        (list
+            ;; not root node (level-1) 
+            (make-node empty false false (make-posn 90 160) 0) 
+            ;; root node     (level-1)
+            (make-node
+                (list
+                    ;; not root node (level-2)
+                    ;; selected? changed
+                    (make-node empty false true (make-posn 120 220) 0)
+                    ;; not root node (level-2)
+                    (make-node empty false false (make-posn 180 220) 0))
+                  true
+                  false 
+                  (make-posn 150 180)
+                  107)
+             ;; not root node (level-1)
+             (make-node empty false false (make-posn 30 160) 0))
+        true
+        false
+        (make-posn 150 120)
+        89))))

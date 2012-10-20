@@ -1,0 +1,38 @@
+Date	Who	Start	Stop	Interruptions	TimeOnTask	Comments
+10/04	MZJ	21:00	22:10	10		60		modify q3 of last hw
+		22:30	23:30	5		55		start q1
+
+============committing to svn: 10/04 23:35 ===================
+10/04	MZJ	23:50	02:40	5+10+5		150		finish q1 without tests
+============committing to svn: 10/05 02:45 ===================
+10/05	MZJ	17:50	18:10	5		15		start q2
+		19:50	21:10	10		70		finish data dentifition and start first two problem
+		23:00	02:00	5+10+5		160		finish half of q2
+============committing to svn: 10/06  02:10===================
+10/06	MZJ	11:30	12:30	5+5		50		continue q2
+		13:30	14:40	10+10		50		almost finish q2
+
+============committing to svn: 10/06  14:50===================
+10/06	MZJ	23:00	00:00	5+5		50		continue q1
+============committing to svn: 10/07  00:01===================
+10/07	MZJ	15:00	15:50	5		45		continue q1
+10/08	MZJ	17:00	20:10	10		180		finish q2
+10/08	MZJ	21:20	23:40	10+10+5		115		continue q1 q2
+============committing to svn: 10/08  00:01===================
+10/09	MZJ	11:40	13:10	10		80		add more tests q1
+		14:00	16:40	5		155		finish q1
+============committing to svn: 10/09  16:45===================
+10/09	MZJ	16:45	17:00			15		continue q2
+============committing to svn: 10/09  17:00===================
+10/09	MZJ	22:30	23:30	5+5		50		totally finish q1
+============committing to svn: 10/10  09:45===================
+10/10	MZJ	13:30	16:30	10		170		
+10/10	MZJ	16:50	17:20	5		25
+============committing to svn: 10/10  17:25===================
+10/10	MZJ	17:30	17:40	5		10
+============committing to svn: 10/10  17:45===================
+Total Time On Task Q1 (minutes)			705
+Total Time On Task Q2 (minutes)			730
+		
+TOTQ1						11.8
+TOTQ2						12.1

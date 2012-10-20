@@ -1,0 +1,35 @@
+Date	Who	Start	Stop	Interruptions	TimeOnTask	Comments
+9/12	MZJ	5:01	5:38	5		27		review lecture, analysis of Q1
+		10:34	11:29	10		45		continue programming
+		0:30	1:17	10+3+5		29		finish first version code without test
+============committing to svn: 9/13 1:20 ===================
+
+9/13	MZJ	10:40	11:10	5		25		add tests,**Q1 finished**
+		11:10	11:55	5		40		start Q2, go lunch
+============committing to svn: 9/13 11:55 ===================
+9/13	MZJ	10:24	11:24	10		50		finishi Q2
+============committing to svn: 9/13 11:25 ===================	
+9/14	MZJ	11:20	11:54			34		start Q3
+		14:20	15:30	5+5+5+5		50
+		18:10	19:20	20		50		finish Q3
+============committing to svn: 9/14 11:25 ===================		
+9/17	MZJ	10:22	10:37	5		10		add tests for Q3				
+
+============committing to svn: 9/17 11:02 ===================	
+9.18	MZJ	14:15	15:30	5+5+20		45		modify Q3
+
+		16:20	16:50	10+5	 	15		modify Q2
+
+============committing to svn: 9/18 16:55 ===================
+9.19	MZJ	01:05	2:45	10+10		80		review all problems. review homework policy;
+								revirw sildes; add more tests. add more explaination			
+============committing to svn: 9/19 02:50 ===================
+9.19	MZJ	11:05	11:15			10
+
+
+Total Time On Task Q1 (minutes)			130
+Total Time On Task Q2 (minutes)			100
+Total Time On Task Q3 (minutes)			190
+TOTQ1						2.1
+TOTQ2						1.7
+TOTQ3						3.1

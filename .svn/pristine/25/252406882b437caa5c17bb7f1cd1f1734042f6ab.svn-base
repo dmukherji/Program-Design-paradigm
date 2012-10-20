@@ -1,0 +1,609 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname |1|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ())))
+(require rackunit)
+(require rackunit/text-ui)
+(require "extras.rkt")
+
+(require 2htdp/universe)
+(require 2htdp/image)
+
+;(provide initial-world)
+;(provide run)
+;(provide world-after-mouse-event)
+;(provide world-after-key-event)
+;(provide world-to-trees)
+;(provide tree-to-root-node)
+;(provide node-to-sons)
+;(provide node-to-center)
+;(provide node-to-selected?)
+;(provide node-room-for-son?)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; CONSTANT VARIABLES
+(define RADIUS 10)
+(define 3RADII (* 3 RADIUS))
+(define 4RADII (* 4 RADIUS))
+(define DIAMETER (* 2 RADIUS))
+(define NODE (circle RADIUS "outline" "green"))
+(define NODE-SELECTED (circle RADIUS "solid" "green"))
+(define NODE-ERROR (circle RADIUS "solid" "red"))
+(define CANVAS-WIDTH 300)
+(define CANVAS-HEIGHT 400)
+(define HALF-CANVAS-WIDTH (/ CANVAS-WIDTH 2))
+(define HALF-CANVAS-HEIGHT (/ CANVAS-HEIGHT 2))
+(define BACKGROUND (empty-scene CANVAS-WIDTH CANVAS-HEIGHT))
+(define INITIAL-ROOT-POSN (make-posn HALF-CANVAS-WIDTH RADIUS))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; data definition
+
+;; A Posn is (make-posn Number Number)
+;; Interp:
+;; x is the x-cood number for the position
+;; y is the y-cood number for this position
+;; template
+;; posn-fn : Posn -> ?
+;(define (posn-fn p)
+;    ...
+;    (posn-x p)
+;    (posn-y p))
+
+(define-struct node (lon root? selected? center minX))
+;; A Node is (make-node ListOf<Node> Boolean Boolean Posn Number)
+;; lon       : is a ListOf<Node> represents the sub-nodes of the given node
+;; root?     : is a Boolean to flag whether the node is a root node
+;; selected? : is a Boolean to flag whether the node is selected
+;; center    : is a Posn represents the central position 
+;; minX      : is a Number which indicates the minimal y of the entire tree
+;;             -- 0 represents no sub-nodes; 
+
+;; template:
+;; node-fn : node->?
+;(define (node-fn node)
+;    (...
+;     (node-lon node)
+;     (node-root? node)
+;     (node-selected? node)
+;     (node-center node)
+;     (node-minX node)))
+
+;; example: 
+(define INITIAL-ROOT-NODE (make-node empty true false INITIAL-ROOT-POSN 0))
+
+;; A ListOf<Node> (LON) which is either
+;; -- empty                     (interp: no node in the list)
+;; -- (cons Node ListOf<Node>)  (interp: a node followed by a sequence of node)
+
+;; template:
+;; lon-fn : ListOf<Node> -> ?
+;(define (lon-fn lon)
+;   (cond 
+;       [(empty? lon) ...]
+;       [else (...
+;                (node-fn (first lon))
+;                (lon-fn (rest lon)))]))
+
+(define-struct world (lon))
+;; A World is a (make-world ListOf<Node>)
+;; interp:
+;; lon is a ListOf<Node> containing all root nodes in the canvas
+;; templte
+;; w-fn : World -> ?
+;(define (w-fn w)
+;    (... 
+;     (world-lon w)))
+
+
+;; A NodeKeyEvent is a KeyEvent that is one of:
+;; "t" (interp: at any time, a new root node is added in the center 
+;;              of the top of the canvas)
+;; "n" (interp: add a new sub-node to the selected root node. 
+;;              if nore more space, then ignore "n")
+;; "d" (interp: delete the selected node and its sub-nodes)
+;; other key inputs (interp: all other keys are ignored)
+
+;; template:
+;; bke-fn : KeyEvent -> ?
+;(define (bke-fn key)
+;   (cond
+;       [(string=? key "t") ...]
+;       [(string=? key "n") ...]
+;       [(string=? key "d") ...]
+;       [else ...]))
+
+;; A DragEvent is a MouseEvent that is one of:
+;; -- "button-down"   (interp: select the node)
+;; -- "drag"          (interp: drag the node)
+;; -- "button-up"     (interp: unselect the node)
+;; -- any other mouse event (interp: ignored)
+
+;; template:
+;; mev-fn : MouseEvent -> ?
+;(define (mev-fn mev)
+;  (cond
+;    [(mouse=? mev "button-down") ...]
+;    [(mouse=? mev "drag") ...]
+;    [(mouse=? mev "button-up") ...]
+;    [else ...]))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(define (main w)
+  (big-bang w
+            (on-draw render)
+            (on-key world-after-key-event)
+            (on-mouse world-after-mouse-event)
+            ))
+
+;; initial-world : Any -> World
+;; interp: Ignore the input, return an initial world
+;; example: (initial-world a)=(make-world empty)
+;; strategy : Domain Knowledge
+(define (initial-world a)
+    (make-world empty))
+
+;; run : Any -> World
+;; Ignores its argument and runs the world. Returns the final state of the world
+;; exmaple (run 1) -> (main (make-world empty))
+;; strategy : function compostion
+(define (run n)
+    (main (initial-world n)))
+
+;; render: World -> Image
+;; draw all nodes in the world
+;; example:
+;; strategy : function composition
+(define (render world)
+  (draw-lines (world-to-trees world)
+    (draw-lon (world-to-trees world) BACKGROUND)))
+
+
+;; draw-lon : ListOf<Node>-> Image
+;; draw all node in the given lob
+;; example:
+;; strategy : structural decomposition on lon [ListOf<Node>]
+(define (draw-lon lon image)
+   (cond 
+       [(empty? lon) image]
+       [else (draw-node
+                (first lon)
+                (draw-lon (rest lon) image))]))
+
+
+;; draw-node : ListOf<Node> Image-> Image
+;; draw the node and all blue line between root and sub nodes
+;; example:
+;; strategy : structural decomposition on node [Node]
+(define (draw-node node image)
+     (place-image
+       (choose-node-type node)
+       (get-node-x (node-to-center node))
+       (get-node-y (node-to-center node))
+       (overlay
+        (draw-lon (node-lon node) image)
+        image)
+))
+
+
+
+(define (draw-lines lon image)
+   (cond 
+       [(empty? lon) image]
+       [else (draw-lines-helper
+                (first lon)
+                (draw-lines (rest lon) image))]))
+
+(define (draw-lines-helper node image)
+        (draw-lines2 (node-lon node) (node-center node) image))
+
+(define (draw-lines2 lon center image)
+   (cond 
+       [(empty? lon) image]
+       [else (overlay-helper
+                (first lon) center
+                (draw-lines2 (rest lon) center image))]))
+
+(define (overlay-helper node center image)
+  (add-line
+      (draw-lines2 (node-lon node) (node-to-center node) image)
+      (get-node-x (node-to-center node))
+      (get-node-y (node-to-center node))
+      (get-node-x center)
+      (get-node-y center)
+      "maroon"))
+
+;; choose-node-type : Node -> Image
+;; choose the correct image type for display
+;; example:
+;; strategy : structural decomposition on node [Node]
+(define (choose-node-type node)
+    (if (node-selected? node)
+        NODE-SELECTED
+        NODE))
+
+;; world-to-trees : World -> ListOf<Node>
+;; returns a list of nodes in the given world
+;; examples:
+;; (world-to-trees initial-world) = empty
+;; strategy: structural decomposition on World [w]
+(define (world-to-trees w)
+    (world-lon w))
+
+;; world-after-mouse-event : World Number Number MouseEvent -> World
+;; for position, select or drag or release a suitable node. 
+;; And return a new world.
+;; examples:
+;; strategy : structural decomposition on mev [MouseEvent]
+(define (world-after-mouse-event w mx my mev)
+  (cond
+    [(mouse=? mev "button-down") (world-after-mouse-down w mx my)]
+    [(mouse=? mev "drag") (world-after-drag w mx my)]
+    [(mouse=? mev "button-up") (world-after-mouse-up w mx my)]
+    [else w]))
+
+;; world-after-mouse-down : World Number Number -> World
+;; select the nodes whcih the given Posn locates inside the node
+;; example:
+;; strategy : structural decomposition on world [World]
+(define (world-after-mouse-down world x y)
+     (make-world (world-after-mouse-down-helper (world-lon world) x y)))
+ 
+;; world-after-mouse-down-helper : ListOf<Node> Number Number -> ListOf<Node>
+;; for each node in the given list, update its information 
+;; based on the given position
+;; example
+;; strategy : structural decomposition on lon [ListOf<Node>]  
+(define (world-after-mouse-down-helper lon x y)
+   (cond 
+       [(empty? lon) empty]
+       [else (cons
+                (update-node-to-selected (first lon) x y)
+                (world-after-mouse-down-helper (rest lon ) x y))]))
+  
+(define (update-node-to-selected node x y)
+   (if (selected-inside-node? (node-center node) x y)
+    (make-node
+       (node-lon node)
+       (node-root? node)
+       true
+       (node-center node)
+       (node-minX node))
+    (make-node
+       (world-after-mouse-down-helper (node-lon node)x y)
+       (node-root? node)
+       false
+       (node-center node)
+       (node-minX node))))
+  
+;; selected-inside-node? : Posn Number Number -> Boolean
+;; Decide whether the given Posn is inside the given node
+;; example
+;; strategy : function composition
+(define (selected-inside-node? center x y)
+    (< (real-part (sqrt (+ (expt (- (get-node-x center) x) 2)
+                (expt (- (get-node-y center) y) 2)))) RADIUS))
+  
+
+;; world-after-drag : World Number Number -> World
+;; drag the selected node and its sub-node in the given world
+;; return a new world after drag
+;; example:
+;; strategy : structural decomposition on world [World]
+(define (world-after-drag world x y)
+    (make-world 
+        (world-after-drag-helper (world-lon world) x y)))
+
+;; world-after-drag-helper : ListOf<Node> Number Number -> ListOf<Node>
+;; drag the selected node and its sub-node in the given LOB
+;; return a new world after drag
+;; example:
+;; strategy : structural decomposition on lon [ListOf<Node>]
+(define (world-after-drag-helper lon x y)
+   (cond 
+       [(empty? lon) empty]
+       [else (cons
+                (drag-node (first lon) x y)
+                (world-after-drag-helper (rest lon) x y))]))
+
+
+;; drag-node : Node Number Number-> Node
+;; drag the given node to a new position based on the given Posn
+;; and return the new node
+;; example:
+;; strategy : structural decomposition on node [Node]
+(define (drag-node node x y)
+  (if (and (node-root? node) (node-selected? node))
+    (make-node
+     (world-after-drag-helper2 (node-center node) (node-lon node) x y)
+     (node-root? node)
+     (node-selected? node)
+     (make-posn x y)
+     (node-minX node))
+    (if (node-selected? node)
+        (make-node
+         (node-lon node)
+         (node-root? node)
+         (node-selected? node)
+         (make-posn x y)
+         (node-minX node))
+        (make-node
+         (world-after-drag-helper (node-lon node) x y)
+         (node-root? node)
+         (node-selected? node)
+         (node-center node)
+         (node-minX node)))))
+
+(define (world-after-drag-helper2 center lon x y)
+   (cond 
+       [(empty? lon) empty]
+       [else (cons
+                (drag-sub-node center (first lon) x y)
+                (world-after-drag-helper2 center (rest lon) x y))]))
+
+(define (drag-sub-node center node x y)
+    (make-node
+     (world-after-drag-helper2 center (node-lon node) x y)
+     (node-root? node)
+     (node-selected? node)
+       (make-posn
+        (+ x (- (get-node-x  (node-center node)) (get-node-x center)))
+        (+ y (- (get-node-y  (node-center node)) (get-node-y center))))
+     (node-minX node)))
+
+
+;; world-after-mouse-up : World Number Number -> World
+;; release the button, updated related node in the world 
+; ;and return a new world
+;; example:
+;; strategy : structural decomposition on world [World]
+(define (world-after-mouse-up world x y)
+    (make-world 
+        (world-after-mouse-up-helper (world-lon world))))
+
+;; world-after-mouse-up-helper : ListOf<Node> Number Number -> ListOf<Node>
+;; change the selected node's selected? field to false
+;; return a new world after mouse up
+;; example:
+;; strategy : structural decomposition on lon [ListOf<Node>]
+(define (world-after-mouse-up-helper lon)
+   (cond 
+       [(empty? lon) empty]
+       [else (cons
+                (node-after-mouse-up (first lon))
+                (world-after-mouse-up-helper (rest lon)))]))
+
+;; node-after-mouse-up : Node Number Number-> Node
+;; change the selected? feld to false, represent the node is not selected
+;; and return the new node
+;; example:
+;; strategy : structural decomposition on node [Node]
+(define (node-after-mouse-up node)
+   (if (node-selected? node)
+       (make-node
+        (node-lon node)
+        (node-root? node)
+        false
+        (node-center node)
+        (node-minX node))
+       (make-node
+        (world-after-mouse-up-helper (node-lon node))
+        (node-root? node)
+        (node-selected? node)
+        (node-center node)
+        (node-minX node))))
+
+;; world-after-key-event : World KeyEvent -> World
+;; Returns the world that follows the given world after the given key event.
+;; example : 
+;; strategy: structural decomposition on key [NodeKeyEvent]
+(define (world-after-key-event w key)
+   (cond
+       [(string=? key "t") (creat-new-root-node w)]
+       [(string=? key "n") (add-new-node w)]
+       [(string=? key "d") (delete-node w)]
+       [else w]))
+
+;; creat-new-root-node : World > World
+;; add a new initial root node to the world, and return the new world
+;; example:
+;; strategy : function composition
+(define (creat-new-root-node world)
+    (make-world (cons 
+                 INITIAL-ROOT-NODE
+                 (world-to-trees world))))
+
+;; add-new-node : World > World
+;; add a new sub-node to the slected node in the world, and return the new world
+;; example:
+;; strategy : function composition
+;(define (add-new-node world)
+;    (local(
+;           (define selectedNodes (find-selected-nodes world)))
+;        (if (enough-nodes-room? selectedNodes)
+;           (add-new-node-helper selectedNodes)
+;           world)))
+;; 
+(define (add-new-node world)
+     (make-world (add-new-node-helper (world-to-trees world))))
+
+;; add-new-node-helper : ListOf<Node> -> ListOf<Node>
+;; for the given list of nodes, update each node if it can add a new node
+;; then, return the new list
+;; example:
+;; strategy : structural decomposition on lon [ListOf<Node>]
+(define (add-new-node-helper lon)
+   (cond 
+       [(empty? lon) empty]
+       [else (cons
+                (update-node (first lon))
+                (add-new-node-helper (rest lon)))]))
+
+;; update-node : Node -> Node
+;; for the given node, return the updated one
+;; if it has room for new one and is selected, return the new one,
+;; else return the old one
+;; example: 
+;; strategy : function composition
+(define (update-node node)
+    (if (and (node-to-selected? 1 2 node) (node-room-for-son? 1 2 node))
+        (update-node-helper node)
+        (update-node-helper2 node)))
+;; update-node-helper : Node -> Node
+;; return the updated node if the node is selected 
+;; and has enough room for a new node
+;; example: 
+;; strategy : function composition
+(define (update-node-helper node)
+    (make-node
+       (cons (new-sub-node node) (node-lon node))
+       true
+       (node-selected? node)
+       (node-center node)
+       (update-minX (new-sub-node-x node) (node-minX node))))
+
+(define (update-node-helper2 node)
+    (make-node
+       (add-new-node-helper (node-lon node))
+       (node-root? node)
+       (node-selected? node)
+       (node-center node)
+       (node-minX node)))
+
+(make-world (list (make-node empty true false (make-posn 150 10) 0)))
+
+(list (make-node empty true false (make-posn 150 10) 0))
+
+
+;; update-minX : Number -> Number
+;; update the minimal x
+;; example:
+;; strategy: domian knowledge
+(define (update-minX new old)
+    (if (= old 0)
+        new
+        (min new old)))
+
+;; node-to-selected? : World Tree Node -> Boolean
+;; decide whether the is selected
+;; example:
+;; strategy : structural decomposition on node [Node]
+(define  (node-to-selected? w t node)
+   (node-selected? node))
+
+;; node-room-for-son? : World Tree Node -> Boolean
+;; decide whether the given node has enough room for a new son
+;; it requires to check whether the new ball is totally inside the canvas
+;; including left, right, bottom, top
+;; PS. first two parameters are ignored
+;; example:
+;; strategy : function composition
+(define (node-room-for-son? world tree node)
+  (and
+     ;; left edge of new ball >= 0?
+     (>= (- (new-sub-node-x node) RADIUS) 0)
+     ;; right edge of new ball <= canvas width
+     (<= (+ RADIUS (new-sub-node-x node)) CANVAS-WIDTH)
+     ;; bottom edge of new ball <= canvas height
+     (<= (+ (new-sub-node-y node) RADIUS) CANVAS-HEIGHT)
+     ;; top edge of new ball >= 0
+     (>= (- (new-sub-node-y node) RADIUS) 0)))
+
+;; new-sub-node-x : Node -> Number
+;; generate the x of new sub-node 
+;; example:
+;; strategy : structural decomposition on node [Node]
+(define (new-sub-node-x node)
+   (if (= 0 (node-minX node))
+       (get-node-x (node-to-center node))
+       (- (get-minX node) 3RADII)))
+
+(define (get-minX node)
+    (get-minX-helper (node-lon node)))
+
+(define (get-minX-helper lon)
+   (cond 
+       [(empty? lon) CANVAS-WIDTH]
+       [else (min
+                (get-node-x (node-to-center (first lon)))
+                (get-minX-helper (rest lon)))]))
+;; new-sub-node-y : Node -> Number
+;; generate the y of new sub-node 
+;; example:
+;; strategy : structural decomposition on node [Node]
+(define (new-sub-node-y node)
+    (+ (get-node-y (node-to-center node)) 4RADII))
+
+;; new-sub-node Node-> Node
+;; generate the new sub-node based on the givenn node
+;; example:
+;; strategy : function composition
+(define (new-sub-node node)
+    (make-node empty false false
+     (make-posn (new-sub-node-x node) (new-sub-node-y node)) 0))
+
+;; get-node-x : Posn -> Number
+;; given a position of root, return the x axis position of it
+;; example: (get-node-x (make-posn 2 3))=2
+;; strategy : structural decomposition on posn [Posn]
+(define (get-node-x posn)
+   (posn-x posn))
+
+;; get-node-y : Posn -> Number
+;; given a position of root, return the y axis position of it
+;; example: (get-node-y (make-posn 2 3))=3
+;; strategy : structural decomposition on posn [Posn]
+(define (get-node-y posn)
+   (posn-y posn))
+
+;; node-to-center Node-> Posn
+;; return the central position of the given Node
+;; example:
+;; strategy : structural decomposition on node [Node]
+(define (node-to-center node)
+   (node-center node))
+
+
+;; delete-node : World -> World
+;; delete the selected node and its sub-tree
+;; example:
+;; strategy : structural decomposition on world [World]
+(define (delete-node world)
+    (make-world 
+       (delete-node-helper (world-lon world))))
+
+;; delete-node-helper : ListOf<Node> -> ListOf<Node>
+;; for the given list of nodes, delete the node if it is selected 
+;; besides, also delete the selected node's sub-nodes
+;; then, return the new list
+;; example:
+;; strategy : structural decomposition on lon [ListOf<Node>]
+(define (delete-node-helper lon)
+   (cond 
+       [(empty? lon) empty]
+       [else (cons
+                (update-node-for-deletion (first lon))
+                (delete-node-helper (rest lon)))]))
+
+;; update-node-for-deletion : Node -> Node
+;; for the given node, return the updated one
+;; if the given node is selected, delete its all sub nodes, return new one
+;; else return the old one
+;; example: 
+;; strategy : function composition
+(define (update-node-for-deletion node)
+    (if (node-to-selected? 1 2 node)
+        empty
+        node))
+;; update-node-for-deletion-helper : Node -> Node
+;; return the updated node if the node is selected 
+;; example: 
+;; strategy : function composition
+#(define (update-node-helper node)
+    (make-node
+       (cons (new-sub-node node) (add-new-node-helper (node-lon node)))
+       (node-root? node)
+       (node-selected? node)
+       (node-center node)
+       (update-minX (new-sub-node-x node)(node-minX node))))
+(new-sub-node (make-node empty true false (make-posn 150 10) 0))
+(run 10)

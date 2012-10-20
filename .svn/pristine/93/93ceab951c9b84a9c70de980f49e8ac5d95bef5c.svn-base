@@ -1,0 +1,81 @@
+structural decomposition on line-item [li]
+structural decomposition on Order [order]
+structural decomposition on Book [book]
+structural decomposition on Inventory [inventory]
+structural decomposition on MaybeNumber maybe-number
+;; strategy: function composition
+;; strategy: higher order function composition
+;; Constant variables
+;; BOOK1 is a book with re-order
+(define BOOK1 (make-book 1111 "C Programming Language " "Brian W. Kernighan" 
+                         "Prentice Hall" 50 30 100  (make-re-order 12 100) 5))
+;; BOOK2 is a book with re-order which should be shipped today
+(define BOOK2 (make-book 2222 "Computer Systems: A Programmer's Perspective" 
+                         "Randal E. Bryant" "Addison-Wesley" 20 15 10
+                         (make-re-order 0 50) 4))
+;; BOOK3 is a book without re-order
+(define BOOK3 (make-book 3333 "ALGEBRA 1" "Stanley A Smith" "Prentice Hall" 
+                         80 50 500 false 8))
+;; BOOK4 is a book with no copies left 
+;; and request a re-order which should be shipped today
+(define BOOK4 (make-book 4444 "MATH 2005 STUDENT EDITION" 
+                         "Scott Foresman" "Addison-Wesley" 60 30 0
+                         (make-re-order 22 500) 6))
+;; BOOK5 is a book with no copies left and request a re-order
+(define BOOK5 (make-book 5555 "A Practical Guide to Agile Process"
+                         "Kenneth S. Rubin" "Addison-Wesley" 60 30 0
+                         (make-re-order 10 20) 6))
+;; BOOK6 is a book with no copies left and did not request a re-order
+(define BOOK6 (make-book 6666 "The Nature of Computation" "Cristopher Moore"
+                         "Oxford University Press" 80 60 0 false 6))
+;; BOOK7 is a book with re-order
+(define BOOK7 (make-book 777"Java " "Brian W. Kernighan" 
+                         "Prentice Hall" 60 30 50  (make-re-order 0 100) 5))
+
+
+;; BOOK1-AFTER-ORDER is a BOOK1 after order
+(define BOOK1-AFTER-ORDER (make-book 1111 "C Programming Language " "Brian W. Kernighan" 
+                         "Prentice Hall" 50 30 90 (make-re-order 12 100) 5))
+;; BOOK7-AFTER-ORDER is a BOOK7 after order
+(define BOOK7-AFTER-ORDER (make-book 1111 "Java " "Brian W. Kernighan" 
+                         "Prentice Hall" 60 30 10  (make-re-order 0 100) 5))
+(define INVENTORY (list BOOK1 BOOK2 BOOK3 BOOK4 BOOK5 BOOK6 BOOK7))
+(define INVENTORY-AFTER-ORDER (list BOOK1-AFTER-ORDER BOOK7-AFTER-ORDER BOOK3 BOOK4 BOOK5 BOOK6 BOOK7))
+
+(define EMPTY-INVENTORY empty)
+;; this line item orders BOOK1(has enough copies left)
+(define LINE-ITEM1 (make-line-item 1111 10))
+;; this line item orders BOOK2(doesn't have enough copies left; has re-order)
+(define LINE-ITEM2 (make-line-item 2222 50))
+;; this line item orders BOOK3(doesn't have enough copies left; no re-order)
+(define LINE-ITEM3 (make-line-item 3333 600))
+;; this line item orders BOOK4(doesn't have enough copies left 
+;; and can be filled after re-order)
+(define LINE-ITEM4 (make-line-item 4444 15))
+;; this line item orders BOOK5(doesn't have enough copies left and
+;; cannot be filled after re-order)
+(define LINE-ITEM5 (make-line-item 5555 50))
+;; this line item orders BOOK6(will never be filled)
+(define LINE-ITEM6 (make-line-item 6666 15))
+;; this line item orders BOOK7 which doesn't exist
+(define LINE-ITEM7 (make-line-item 7777 40))
+;; this line item orders BOOK8 which doesn't exist
+(define LINE-ITEM8 (make-line-item 8888 15))
+
+;; order that contains line-items can be filled now
+(define ORDER-FILLABLE-NOW (list LINE-ITEM1 LINE-ITEM7))
+
+;; order that contains line-items cannot be filled now 
+;; but can be filled after re-order
+;; LINE-ITEM2 and LINE-ITEM4 not enough copies now, can be filled after re-order
+;; in more than 0 days
+(define ORDER-FILLABLE-LATER (list LINE-ITEM1 LINE-ITEM2 LINE-ITEM4))
+;; can be filled now (0 days)
+(define ORDER-FILLABLE-LATER-0 (list LINE-ITEM1 LINE-ITEM2))
+;; order that contains line-items cannot be filled forever
+;; because book doesn't exist for LINE-ITEM8
+(define ORDER-NOT-FILLABLE-EVER-7 (list LINE-ITEM1 LINE-ITEM2 LINE-ITEM3 LINE-ITEM8))
+;; LINE-ITEM5 : re-order is not enough
+(define ORDER-NOT-FILLABLE-EVER-5 (list LINE-ITEM1 LINE-ITEM2 LINE-ITEM3 LINE-ITEM4 LINE-ITEM5))
+;; LINE-ITEM6 : no copies now and no more re-order
+(define ORDER-NOT-FILLABLE-EVER-6 (list LINE-ITEM1 LINE-ITEM2 LINE-ITEM3 LINE-ITEM4 LINE-ITEM6))

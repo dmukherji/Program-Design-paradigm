@@ -1,0 +1,6 @@
+;; strategy: structural decomposition on expr [Expr]
+;; strategy: structural decomposition on loexpr [LOExpr]
+;; strategy: function composition
+;; strategy: higher order function composition
+
+LOExpr
