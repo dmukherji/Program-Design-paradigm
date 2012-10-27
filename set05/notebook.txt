@@ -1,0 +1,61 @@
+Date	  Who	          Start	  Stop	  Interruptions	  TimeOnTask	  Comments
+
+10/20	maziji/mfduan	  12:40	  14:38	     20		     98	          Data analysis of Q1, writing data definition of Q1
+=================committing to svn: 10/20 14:38 ========================
+
+10/20	maziji/mfduan	  14:40   14:45      0               5            Finished data definition of Q1
+=================committing to svn: 10/20 14:45 ========================
+
+10/20	maziji/mfduan     15:20   16:34      10              64           Finished function definition of Q1
+=================committing to svn: 10/20 16:34 ========================
+
+10/21	maziji/mfduan	  11:40	  14:44      20              164          Finished Data Definition of Q2, Start writing function of Q2
+=================committing to svn: 10/21 14:44 ========================
+
+10/21	maziji/mfduan	  20:40	  23:17      10              147          Finished function definition of Q2 
+=================committing to svn: 10/21 23:17 ========================
+
+10/22	maziji/mfduan	  11:30	  11:57      0               27           Revise a problem of Q2
+=================committing to svn: 10/22 11:57 ========================
+
+10/22	maziji/mfduan	  13:40	  15:00      10              70           Revise a problem of Q2     
+=================committing to svn: 10/22 15:00 ========================
+
+10/22	maziji/mfduan	  16:00	  16:30      0               30           Check and improve the function definition of Q2           
+=================committing to svn: 10/22 16:30 ========================
+
+10/23	maziji/mfduan	  08:40	  09:35      0               55           Finished the improvement of Q2
+=================committing to svn: 10/23 09:35 ========================
+
+10/23	maziji/mfduan	  11:00	  12:15      10              65           Check and improve the function definition of Q1  
+=================committing to svn: 10/23 12:15 ======================== 
+     
+10/23	maziji/mfduan     13:40	  16:05      30              125          Start writing test for Q1 and Q2       
+=================committing to svn: 10/23 16:05 ========================
+
+10/24	maziji/mfduan	  00:40	  02:15      0               95           Find a serious problem of Q2, revise it
+=================committing to svn: 10/24 02:15 ========================
+
+10/24	maziji/mfduan	  08:40	  10:08      20              68           Revise the function structure diagram    
+=================committing to svn: 10/24 10:08 ======================== 
+
+10/24	maziji/mfduan	  10:30	  11:10      10              30           Finished test of Q1 and Q2   
+=================committing to svn: 10/24 11:10 ========================
+
+10/24	maziji/mfduan	  11:40	  12:22      10              32           Find a serious problem of Q1, revise it.
+=================committing to svn: 10/24 12:22 ========================
+
+10/24	maziji/mfduan	  13:40	  15:04      10              64           A improvement of test of Q2. Almost finish all works              
+=================committing to svn: 10/24 15:04 ========================
+
+10/24	maziji/mfduan	  15:20	  15:48      0               28           Write description of accumulator             
+=================committing to svn: 10/24 15:48 ========================
+
+10/24	maziji/mfduan	  16:00	  17:30      10              80           Finished the work             
+=================committing to svn: 10/24 17:30 ========================
+
+Total Time On Task Q1 (minutes)			400
+Total Time On Task Q2 (minutes)			800
+TOTQ1						6.6
+TOTQ2						13.3
+				
