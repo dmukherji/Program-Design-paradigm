@@ -1,0 +1,65 @@
+Date	  Who	          Start	  Stop	  Interruptions	  TimeOnTask	  Comments
+
+10/26	maziji/mfduan	  14:35	  14:45	     0		     10	          Build the problem set06 folder 
+=================committing to svn: 10/26 14:45 ========================
+
+10/26	maziji/mfduan	  22:00   00:55      20              135          Finished the data definition of Q1
+=================committing to svn: 10/27 00:55 ========================
+
+10/27	maziji/mfduan     14:00   15:24      10              74           Finished function definition of Q1
+=================committing to svn: 10/27 15:24 ========================
+
+10/27	maziji/mfduan	  15:24	  15:27      0               3            Revise a little problem of Q1
+=================committing to svn: 10/27 15:27 ========================
+
+10/27	maziji/mfduan	  15:30	  15:36      0               6            Add the file of Q2
+=================committing to svn: 10/27 15:36 ========================
+
+10/27	maziji/mfduan	  15:40	  16:50      0               60           Finished the data definition and function definition of Q2
+=================committing to svn: 10/27 16:50 ========================
+
+10/28	maziji/mfduan	  22:40	  00:03      10              73           Finished test of Q1, some question about strategy still need to be resolved    
+=================committing to svn: 10/29 00:03 ========================
+
+10/30	maziji/mfduan	  07:40	  09:31      10              100          Finished the test of Q2           
+=================committing to svn: 10/30 09:31 ========================
+
+10/30	maziji/mfduan	  12:50	  14:46      20              96           Revise Q2, finihsed Q3
+=================committing to svn: 10/30 14:46 ========================
+
+11/05	maziji/mfduan	  12:00	  14:57      10              167          Revise the function definition of Q2
+=================committing to svn: 11/05 14:57 ======================== 
+     
+11/06	maziji/mfduan     14:20	  15:09      0               49           Revise Q2 and Q3       
+=================committing to svn: 11/06 15:09 ========================
+
+11/06	maziji/mfduan	  15:20	  15:49      0               29           Revise Q2 and Q3 
+=================committing to svn: 11/06 02:15 ========================
+
+11/06	maziji/mfduan	  19:00	  20:11      20              51           Checks the Q1    
+=================committing to svn: 11/06 20:11 ======================== 
+
+11/06	maziji/mfduan	  10:30	  00:37      10              117          Revise the function definition of Q1  
+=================committing to svn: 11/07 00:37 ========================
+
+11/07	maziji/mfduan	  11:00	  11:34      0               34           Check Q1 and Q2, do some improvement
+=================committing to svn: 11/07 11:34 ========================
+
+11/07	maziji/mfduan	  12:40	  13:20      10              30          almost finish
+=================committing to svn: 11/07 13:28 ========================
+
+11/07	maziji/mfduan	  14:05	  14:55      0               50           finish
+=================committing to svn: 11/07 15:00 ========================
+
+11/07	maziji/mfduan	  17:35	  17:55      0               20           little revise, finished
+=================committing to svn: 11/07 17:55  ========================
+
+
+Total Time On Task Q1 (minutes)			325
+Total Time On Task Q2 (minutes)			675
+Total Time On Task Q3 (minutes)			84
+TOTQ1						5.4
+TOTQ2						11.2
+TOTQ3						1.4
+TOTAL						18.0
+				
